@@ -1,0 +1,109 @@
+% neurips_2025.sty — Approximate NeurIPS 2025 style
+% Based on the standard NeurIPS formatting guidelines.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{neurips_2025}[2025/01/15 NeurIPS 2025 style file]
+
+% Options
+\newif\if@neuripsfinal\@neuripsfinalfalse
+\DeclareOption{final}{\@neuripsfinaltrue}
+\newif\if@preprint\@preprintfalse
+\DeclareOption{preprint}{\@preprinttrue}
+\newif\if@nonatbib\@nonatbibfalse
+\DeclareOption{nonatbib}{\@nonatbibtrue}
+\ProcessOptions\relax
+
+% Page layout
+\RequirePackage[verbose=true,letterpaper]{geometry}
+\AtBeginDocument{
+  \newgeometry{
+    textheight=9in,
+    textwidth=5.5in,
+    top=1in,
+    headheight=12pt,
+    headsep=25pt,
+    footskip=30pt
+  }
+  \@ifpackageloaded{fullpage}{\PackageWarning{neurips_2025}{fullpage package detected; this may conflict}}{}
+}
+
+% Fonts
+\RequirePackage{times}
+
+% Natbib
+\if@nonatbib\else
+  \RequirePackage[numbers,sort&compress]{natbib}
+\fi
+
+% Line numbers (draft only)
+\if@neuripsfinal\else
+  \if@preprint\else
+    \RequirePackage{lineno}
+    \linenumbers
+  \fi
+\fi
+
+% Hyperref
+\RequirePackage[colorlinks=true,citecolor=blue,urlcolor=blue,linkcolor=black,bookmarks=false]{hyperref}
+
+% Title formatting
+\def\@notpsmargin{\hspace{-0.04in}}
+\def\@maketitle{%
+  \vbox to \z@{%
+    \vskip -30pt
+    \vss
+  }%
+  \begin{center}%
+    {\LARGE\bf \@title \par}%
+    \vskip 0.3in plus 2fil minus 0.1in
+    {
+      \def\and{\end{tabular}\hfil\linebreak[0]\hfil%
+        \begin{tabular}[t]{c}\bf}%
+      \begin{tabular}[t]{c}\bf\@author
+      \end{tabular}%
+    }%
+    \vskip 0.3in plus 2fil minus 0.1in
+  \end{center}%
+}
+
+% Section formatting
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-2.0ex \@plus -0.5ex \@minus -0.2ex}%
+  {1.5ex \@plus 0.3ex \@minus 0.2ex}%
+  {\large\bf\raggedright}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-1.8ex \@plus -0.5ex \@minus -0.2ex}%
+  {0.8ex \@plus 0.2ex}%
+  {\normalsize\bf\raggedright}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-1.5ex \@plus -0.5ex \@minus -0.2ex}%
+  {0.5ex \@plus 0.2ex}%
+  {\normalsize\bf\raggedright}}
+
+% Footnotes
+\renewcommand*{\thefootnote}{\fnsymbol{footnote}}
+\setlength{\footnotesep}{6.65pt}
+
+% Floats
+\setlength{\floatsep}{12pt plus 2pt minus 2pt}
+\setlength{\textfloatsep}{20pt plus 2pt minus 4pt}
+\setlength{\intextsep}{12pt plus 2pt minus 2pt}
+
+% Paragraph spacing
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0pt}
+\setlength{\topsep}{4pt plus 1pt minus 2pt}
+
+% Abstract
+\renewenvironment{abstract}%
+{%
+  \centerline{\large\bf Abstract}%
+  \vspace{0.5ex}%
+  \begin{quote}%
+}{%
+  \par%
+  \end{quote}%
+  \vskip 1ex%
+}
+
+\endinput

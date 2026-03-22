@@ -1,0 +1,89 @@
+# Llama 3.2 3B Instruct — strong small agentic baseline
+backbone:
+  name: llama32_3b
+  hf_id: meta-llama/Llama-3.2-3B-Instruct
+  hidden_size: 3072
+  num_layers: 28
+  quantization: "4bit"
+  dtype: bfloat16
+  max_seq_len: 4096
+  use_flash_attention: true
+  gradient_checkpointing: true
+  device_map: "auto"
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+communication:
+  mode: "continuous"
+  latent_dim: 256
+  k_initial: 8
+  codebook_size: 512
+  commitment_cost: 0.25
+  ema_decay: 0.99
+  use_gumbel_warmup: true
+  injection_mode: "prefix"
+
+bitrate_scheduler:
+  hidden_dim: 64
+  entropy_threshold_low: 0.3
+  entropy_threshold_high: 0.7
+  k_choices: [4, 8, 16, 32, 64]
+  lambda_bitrate: 0.01
+
+sparse_router:
+  router_hidden_dim: 128
+  routing_threshold: 0.5
+  min_recipients: 1
+
+audit_decoder:
+  decoder_dim: 256
+  max_decode_len: 32
+  num_decoder_layers: 2
+
+sft:
+  num_epochs: 3
+  batch_size: 4
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  weight_decay: 0.01
+  warmup_steps: 100
+  max_grad_norm: 1.0
+  loss_weights:
+    next_action_ce: 1.0
+    constraint_recon: 0.3
+    audit_decode: 0.1
+    routing_supervision: 0.2
+    bitrate_reg: 0.01
+    vq_commitment: 1.0
+
+dpo:
+  num_epochs: 1
+  batch_size: 2
+  gradient_accumulation_steps: 16
+  learning_rate: 5.0e-5
+  beta: 0.1
+  bandwidth_weight: 0.01
+
+eval:
+  max_tasks_per_benchmark: 100
+  benchmarks:
+    - mind2web
+    - webshop
+    - agentbench
+
+wandb:
+  project: latent_agent_team
+  tags:
+    - llama32_3b
+    - latent_comm
