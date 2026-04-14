@@ -1,0 +1,17 @@
+.git
+.github
+__pycache__
+*.pyc
+*.egg-info
+.pytest_cache
+.ruff_cache
+outputs
+results
+data
+wandb
+*.ckpt
+*.safetensors
+.venv
+venv
+.env
+.DS_Store
